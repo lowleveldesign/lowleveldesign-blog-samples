@@ -115,11 +115,14 @@ namespace Mdb.Extension
         private static int CalculateCallDepth(MDbgFrame frame)
         {
             int depth = 0;
-            while (frame != null && frame.IsManaged)
+            while (frame != null)
             {
-                Debug.Assert(frame.Function != null);
-                if (String.Equals(frame.Function.FullName, startFuncName, StringComparison.Ordinal))
-                    return depth;
+                if (frame.IsManaged)
+                {
+                    Debug.Assert(frame.Function != null);
+                    if (String.Equals(frame.Function.FullName, startFuncName, StringComparison.Ordinal))
+                        return depth;
+                }
                 frame = frame.NextUp;
                 depth++;
             }
