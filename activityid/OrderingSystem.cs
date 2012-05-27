@@ -16,6 +16,8 @@ namespace LowLevelDesign.Samples
         
         public decimal Cash { get; set; }
         
+        public Guid ActivityId { get; set; }
+        
         public DateTime CreatedOn { get; set; }
         
         // OK or FAIL
@@ -33,7 +35,8 @@ namespace LowLevelDesign.Samples
         public int PlaceOrder(String username, String product, decimal cash) 
         {
             Guid prevActivityId = Trace.CorrelationManager.ActivityId;
-            Trace.CorrelationManager.ActivityId = Guid.NewGuid();
+            Guid activityId = Guid.NewGuid();
+            Trace.CorrelationManager.ActivityId = activityId;
         
             // create an order record
             var order = new Order {
@@ -41,6 +44,7 @@ namespace LowLevelDesign.Samples
                             Product = product,
                             Cash = cash,
                             CreatedOn = DateTime.UtcNow,
+                            ActivityId = activityId
                         };
         
             // validation: if order is invalid throw some exception - ask client to correct
