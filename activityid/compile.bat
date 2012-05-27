@@ -1,1 +1,1 @@
-csc /debug+ /d:TRACE OrderingSystem.cs SqlMapper.cs SqlMapperExtensions.cs
+csc /debug+ /d:TRACE /t:exe /r:Essential.Diagnostics.dll OrderingSystem.cs SqlMapper.cs SqlMapperExtensions.cs 
