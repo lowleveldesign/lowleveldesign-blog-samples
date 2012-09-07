@@ -1,0 +1,15 @@
+@using LowLevelDesign.DiagnosingAdoNet
+
+@{
+    ViewBag.Title = "Edit Product";
+}
+
+@model Product
+
+@using (@Html.BeginForm()) {
+    @Html.EditorFor(m => m.ProductKey);
+    @Html.EditorFor(m => m.Price);
+    
+    <input type="submit" value="Zapisz" />
+    <a href="@Url.Action("Index", "Home")">Cancel</a>
+}

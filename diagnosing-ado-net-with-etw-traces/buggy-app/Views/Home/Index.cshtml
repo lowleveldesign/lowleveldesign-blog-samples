@@ -1,0 +1,15 @@
+@using LowLevelDesign.DiagnosingAdoNet
+
+@{
+    ViewBag.Title = "Products";
+}
+
+@model IEnumerable<Product>
+
+<h2>Products</h2>
+
+@foreach (var p in Model) 
+{
+    <a href="@Url.Action("Edit", "Product", new { productKey = p.ProductKey })">@p.ProductKey : @p.Price</a><br />
+}
+<a href="@Url.Action("Edit", "Product")">New Product...</a>
