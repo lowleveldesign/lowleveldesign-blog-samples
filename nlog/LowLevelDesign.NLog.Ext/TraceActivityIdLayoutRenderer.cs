@@ -12,6 +12,8 @@ namespace LowLevelDesign.NLog.LayoutRenderers
     /// The trace correlation activity id.
     /// </summary>
     [LayoutRenderer("activityid")]
+    [AppDomainFixedOutput]
+    [ThreadAgnostic]
     public class TraceActivityIdLayoutRenderer : LayoutRenderer
     {
         /// <summary>
