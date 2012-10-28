@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  
+  <PropertyGroup>
+    <OutputDir Condition=" '$(OutputDir)' == '' ">bin</OutputDir>
+    <OutputFileName Condition=" '$(OutputFileName)' == '' ">LowLevelDesign.NLog.Ext.dll</OutputFileName>
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <Sources Include="*.cs" />
+    <References Include="ref\NLog.dll" />
+  </ItemGroup>
+  
+  <Target Name="Build">
+    <!-- Create output directory -->
+    <MakeDir Directories="$(OutputDir)" />
+    <!-- Compile -->
+    <Csc DebugType="full"
+         Sources="@(Sources)"
+         References="@(References)"
+         TargetType="library"
+         OutputAssembly="$(OutputDir)\$(OutputFileName)" />
+  </Target>
+</Project>
