@@ -1,3 +1,4 @@
+using System;
 using System.Diagnostics;
 using System.Globalization;
 using System.Text;
@@ -12,7 +13,6 @@ namespace LowLevelDesign.NLog.LayoutRenderers
     /// The trace correlation activity id.
     /// </summary>
     [LayoutRenderer("activityid")]
-    [ThreadAgnostic]
     public class TraceActivityIdLayoutRenderer : LayoutRenderer
     {
         /// <summary>
@@ -22,7 +22,8 @@ namespace LowLevelDesign.NLog.LayoutRenderers
         /// <param name="logEvent">Logging event.</param>
         protected override void Append(StringBuilder builder, LogEventInfo logEvent)
         {
-            builder.Append(Trace.CorrelationManager.ActivityId.ToString("D", CultureInfo.InvariantCulture));
+            builder.Append(Guid.Empty.Equals(Trace.CorrelationManager.ActivityId) ? 
+                String.Empty : Trace.CorrelationManager.ActivityId.ToString("D", CultureInfo.InvariantCulture));
         }
     }
 }

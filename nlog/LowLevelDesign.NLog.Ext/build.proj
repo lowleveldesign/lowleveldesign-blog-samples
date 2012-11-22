@@ -2,8 +2,13 @@
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   
   <PropertyGroup>
-    <OutputDir Condition=" '$(OutputDir)' == '' ">bin</OutputDir>
     <OutputFileName Condition=" '$(OutputFileName)' == '' ">LowLevelDesign.NLog.Ext.dll</OutputFileName>
+    <Configuration Condition="'$(Configuration)' == ''">debug</Configuration>
+   <OutputDir Condition=" '$(OutputDir)' == '' ">bin\$(Configuration)</OutputDir>
+    <DebugType Condition=" '$(Configuration)' == 'release' ">pdbonly</DebugType>
+    <Optimize Condition=" '$(Configuration)' == 'release' ">true</Optimize>
+    <DebugType Condition=" '$(Configuration)' == 'debug' ">full</DebugType>
+    <Optimize Condition=" '$(Configuration)' == 'debug' ">false</Optimize>
   </PropertyGroup>
   
   <ItemGroup>
@@ -15,9 +20,10 @@
     <!-- Create output directory -->
     <MakeDir Directories="$(OutputDir)" />
     <!-- Compile -->
-    <Csc DebugType="full"
-         Sources="@(Sources)"
+    <Csc Sources="@(Sources)"
          References="@(References)"
+         DebugType="$(DebugType)"
+         Optimize="$(Optimize)"
          TargetType="library"
          OutputAssembly="$(OutputDir)\$(OutputFileName)" />
   </Target>
