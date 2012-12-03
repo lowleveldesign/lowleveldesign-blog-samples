@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  
+  <PropertyGroup>
+    <OutputFileName Condition=" '$(OutputFileName)' == '' ">TestProgram.exe</OutputFileName>
+    <Configuration Condition="'$(Configuration)' == ''">debug</Configuration>
+   <OutputDir Condition=" '$(OutputDir)' == '' ">.</OutputDir>
+    <DebugType Condition=" '$(Configuration)' == 'release' ">pdbonly</DebugType>
+    <Optimize Condition=" '$(Configuration)' == 'release' ">true</Optimize>
+    <DebugType Condition=" '$(Configuration)' == 'debug' ">full</DebugType>
+    <Optimize Condition=" '$(Configuration)' == 'debug' ">false</Optimize>
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <Sources Include="*.cs" />
+    <References Include="Topshelf.dll" />
+    <References Include="Topshelf.NLog.dll" />
+    <References Include="NLog.dll" />
+  </ItemGroup>
+  
+  <Target Name="Build">
+    <!-- Create output directory -->
+    <MakeDir Directories="$(OutputDir)" />
+    <!-- Compile -->
+    <Csc Sources="@(Sources)"
+         References="@(References)"
+         DebugType="$(DebugType)"
+         Platform="x64"
+         Optimize="$(Optimize)"
+         OutputAssembly="$(OutputDir)\$(OutputFileName)" />
+  </Target>
+</Project>
