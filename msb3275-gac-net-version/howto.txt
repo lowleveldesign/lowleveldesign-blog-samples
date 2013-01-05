@@ -1,0 +1,18 @@
+
+Everything works fine till we have all projects targeted to .net 3.5 and no dlls installed in GAC.
+
+Now, let's close the solution in VS and change the `<TargetFrameworkVersion>v3.5</TargetFrameworkVersion>` for TestLib2 to v4.0. Then run msbuild:
+
+    msbuild TestLib2.proj
+
+and install the newly created assembly in GAC:
+
+    gacutil /i TestLib2.dll
+
+Change the TargetFrameworkVersion back to v3.5 and open VS. Now, when compiling the solution you should get an error:
+
+    Warning	1	The primary reference "C:\temp\GacTest\TestLib1\bin\Debug\TestLib1.dll" could not be resolved because it has an indirect dependency on the assembly "TestLib2, Version=1.0.0.0, Culture=neutral, PublicKeyToken=754fe961f9d8fd07" which was built against the ".NETFramework,Version=v4.0" framework. This is a higher version than the currently targeted framework ".NETFramework,Version=v3.5".	C:\Windows\Microsoft.NET\Framework\v4.0.30319\Microsoft.Common.targets	1578	5	TestApp
+    Warning	2	The primary reference "C:\temp\GacTest\TestLib1\bin\Debug\TestLib1.dll" could not be resolved because it has an indirect dependency on the .NET Framework assembly "mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" which has a higher version "4.0.0.0" than the version "2.0.0.0" in the current target framework.	C:\Windows\Microsoft.NET\Framework\v4.0.30319\Microsoft.Common.targets	1578	5	TestApp
+    Error	3	The name 'TestLib1' does not exist in the current context	C:\temp\GacTest\TestApp\Program.cs	12	31	TestApp
+
+To correct the situation you can uninstall TestLib2 from GAC.
