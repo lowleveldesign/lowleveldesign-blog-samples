@@ -11,6 +11,7 @@ and then you can use it when defining a layout for your logging target, eg.:
 
       <targets>
         <target name="console" xsi:type="ColoredConsole" layout="${longdate}|${lld.asmver:assemblyname=NLog}|${lld.asmver}|${logger}|${uppercase:${level}}|${message}${onexception:|Exception occurred\:${exception:format=tostring}}" />
+        <target name="etw" type="lld.EventTracing" providerId="3e524ae9-1270-43df-8455-a842430fbcfc" layout="${longdate}|${lld.asmver:assemblyname=NLog}|${lld.asmver}|${logger}|${uppercase:${level}}|${message}${onexception:|Exception occurred\:${exception:format=tostring}}" />
       </targets>
 
 Detailed description on how to use this package can be found in the following posts:

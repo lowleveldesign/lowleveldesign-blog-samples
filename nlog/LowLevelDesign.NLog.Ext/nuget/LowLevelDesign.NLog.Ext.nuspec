@@ -1,17 +1,18 @@
 <?xml version="1.0"?>
 <package >
   <metadata>
-    <id>LowLevelDesign.Nuget.Ext</id>
-    <version>1.0.0</version>
+    <id>LowLevelDesign.NLog.Ext</id>
+    <version>1.1.1</version>
     <authors>ssolnica</authors>
     <owners>ssolnica</owners>
+    <title>LowLevelDesign.NLog.Ext</title>
     <licenseUrl>http://lowleveldesign.codeplex.com/license</licenseUrl>
-    <projectUrl>http://lowleveldesign.codeplex.com/</projectUrl>
+    <projectUrl>http://lowleveldesign.wordpress.com/</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>NLog renderers for trace activity id and assembly version.</description>
-    <releaseNotes>Initial release</releaseNotes>
+    <description>Package contains : NLog renderers for trace activity id and assembly version, ETW NLog provider and NLogTraceListener</description>
+    <releaseNotes></releaseNotes>
     <copyright>Copyright (C) 2013 Sebastian Solnica</copyright>
-    <tags>NLog, LayoutRenderer, TraceActivityId</tags>
+    <tags>NLog, LayoutRenderer, TraceActivityId, ETW</tags>
     <dependencies>
       <dependency id="NLog" version="2.0" />
     </dependencies>

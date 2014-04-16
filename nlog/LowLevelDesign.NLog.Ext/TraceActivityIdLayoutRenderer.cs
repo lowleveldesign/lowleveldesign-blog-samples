@@ -7,7 +7,7 @@ using NLog.LayoutRenderers;
 using NLog.Config;
 using NLog.Internal;
 
-namespace LowLevelDesign.NLog.LayoutRenderers
+namespace LowLevelDesign.NLog.Ext
 {
     /// <summary>
     /// The trace correlation activity id.
