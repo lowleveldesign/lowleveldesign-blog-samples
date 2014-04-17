@@ -2,19 +2,20 @@
 <package >
   <metadata>
     <id>LowLevelDesign.NLog.Ext</id>
-    <version>1.1.1</version>
+    <version>1.2.0</version>
     <authors>ssolnica</authors>
     <owners>ssolnica</owners>
     <title>LowLevelDesign.NLog.Ext</title>
     <licenseUrl>http://lowleveldesign.codeplex.com/license</licenseUrl>
     <projectUrl>http://lowleveldesign.wordpress.com/</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>Package contains : NLog renderers for trace activity id and assembly version, ETW NLog provider and NLogTraceListener</description>
+    <description>Package contains : NLog renderers for trace activity id and assembly version, ETW NLog targets and NLogTraceListener</description>
     <releaseNotes></releaseNotes>
-    <copyright>Copyright (C) 2013 Sebastian Solnica</copyright>
+    <copyright>Copyright (C) 2014 Sebastian Solnica</copyright>
     <tags>NLog, LayoutRenderer, TraceActivityId, ETW</tags>
     <dependencies>
-      <dependency id="NLog" version="2.0" />
+        <dependency id="NLog" version="2.0" />
+        <dependency id="Microsoft.Diagnostics.Tracing.EventSource" version="1.0.16" />
     </dependencies>
   </metadata>
 </package>

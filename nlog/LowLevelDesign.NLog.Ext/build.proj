@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  
+
   <PropertyGroup>
     <OutputFileName Condition=" '$(OutputFileName)' == '' ">LowLevelDesign.NLog.Ext.dll</OutputFileName>
     <Configuration Condition="'$(Configuration)' == ''">debug</Configuration>
@@ -10,12 +10,12 @@
     <DebugType Condition=" '$(Configuration)' == 'debug' ">full</DebugType>
     <Optimize Condition=" '$(Configuration)' == 'debug' ">false</Optimize>
   </PropertyGroup>
-  
+
   <ItemGroup>
     <Sources Include="*.cs" />
-    <References Include="ref\NLog.dll" />
+    <References Include="ref\*.dll" />
   </ItemGroup>
-  
+
   <Target Name="Build">
     <!-- Create output directory -->
     <MakeDir Directories="$(OutputDir)" />

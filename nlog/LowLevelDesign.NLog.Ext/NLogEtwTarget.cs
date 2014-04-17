@@ -1,12 +1,8 @@
 ﻿using NLog;
 using NLog.Targets;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Eventing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LowLevelDesign.NLog.Ext
 {
@@ -29,29 +25,33 @@ namespace LowLevelDesign.NLog.Ext
         protected override void InitializeTarget() {
             base.InitializeTarget();
 
-            // we will create a TraceListener
-            provider = new EventProvider(providerId);
+            // we will create an EventProvider for ETW
+            try {
+                provider = new EventProvider(providerId);
+            } catch (PlatformNotSupportedException) {
+                // sorry :(
+            }
         }
 
         protected override void Write(LogEventInfo logEvent) {
-            if (!provider.IsEnabled()) {
+            if (provider == null || !provider.IsEnabled()) {
                 return;
             }
-            TraceEventType t = 0;
+            byte t;
             if (logEvent.Level == LogLevel.Debug || logEvent.Level == LogLevel.Trace) {
-                t = TraceEventType.Verbose;
+                t = 5;
             } else if (logEvent.Level == LogLevel.Info) {
-                t = TraceEventType.Information;
+                t = 4;
             } else if (logEvent.Level == LogLevel.Warn) {
-                t = TraceEventType.Warning;
+                t = 3;
             } else if (logEvent.Level == LogLevel.Error) {
-                t = TraceEventType.Error;
+                t = 2;
             } else if (logEvent.Level == LogLevel.Fatal) {
-                t = TraceEventType.Critical;
+                t = 1;
+            } else {
+                t = 5; // let it be verbose
             }
-
-            EventDescriptor evdesc = new EventDescriptor(logEvent.SequenceID, 0, 0, (byte)t, 0, 0, 0);
-            provider.WriteEvent(ref evdesc, this.Layout.Render(logEvent));
+            provider.WriteMessageEvent(this.Layout.Render(logEvent), t, 0);
         }
 
         protected override void CloseTarget() {
