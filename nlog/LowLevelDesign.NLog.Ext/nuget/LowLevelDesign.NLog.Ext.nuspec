@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>LowLevelDesign.NLog.Ext</id>
-    <version>1.2.0</version>
+    <version>1.2.1</version>
     <authors>ssolnica</authors>
     <owners>ssolnica</owners>
     <title>LowLevelDesign.NLog.Ext</title>
@@ -10,7 +10,10 @@
     <projectUrl>http://lowleveldesign.wordpress.com/</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Package contains : NLog renderers for trace activity id and assembly version, ETW NLog targets and NLogTraceListener</description>
-    <releaseNotes></releaseNotes>
+    <releaseNotes>
+        v1.2.1:
+        - added EtwContextScope
+    </releaseNotes>
     <copyright>Copyright (C) 2014 Sebastian Solnica</copyright>
     <tags>NLog, LayoutRenderer, TraceActivityId, ETW</tags>
     <dependencies>
