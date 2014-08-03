@@ -1,0 +1,26 @@
+﻿@using System.Security.Claims
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+</head>
+<body>
+    <div>
+        Logged user: @User.Identity.Name
+    </div>
+    <div>
+        Claims:<br />
+        @foreach (var claim in ((ClaimsIdentity)User.Identity).Claims)
+        {
+            <span>@claim.Type:</span><span>@claim.Value</span><br />
+        }
+    </div>
+</body>
+</html>

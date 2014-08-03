@@ -1,0 +1,30 @@
+﻿@{
+    Layout = null;
+}
+
+@model IdentityAuth.Models.LoginModel
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>View</title>
+</head>
+<body>
+    <div>
+        @using (Html.BeginForm())
+        {
+            <div>
+                @Html.LabelFor(m => m.Login)
+                @Html.TextBoxFor(m => m.Login)
+            </div>
+            <div>
+                @Html.LabelFor(m => m.Password)
+                @Html.PasswordFor(m => m.Password)
+            </div>
+            <input type="submit" value="Login" />
+        }
+    </div>
+</body>
+</html>
