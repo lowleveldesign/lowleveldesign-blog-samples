@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ProtossCom", "ProtossCom\ProtossCom.vcxproj", "{01D974A6-9A4D-40F5-A511-E16FE253E168}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ProtossComClient", "ProtossComClient\ProtossComClient.vcxproj", "{D7694EFE-C6CA-4D35-A378-5B62A7DCFAC7}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{01D974A6-9A4D-40F5-A511-E16FE253E168}.Debug|Win32.ActiveCfg = Debug|Win32
+		{01D974A6-9A4D-40F5-A511-E16FE253E168}.Debug|Win32.Build.0 = Debug|Win32
+		{01D974A6-9A4D-40F5-A511-E16FE253E168}.Release|Win32.ActiveCfg = Release|Win32
+		{01D974A6-9A4D-40F5-A511-E16FE253E168}.Release|Win32.Build.0 = Release|Win32
+		{D7694EFE-C6CA-4D35-A378-5B62A7DCFAC7}.Debug|Win32.ActiveCfg = Debug|Win32
+		{D7694EFE-C6CA-4D35-A378-5B62A7DCFAC7}.Debug|Win32.Build.0 = Debug|Win32
+		{D7694EFE-C6CA-4D35-A378-5B62A7DCFAC7}.Release|Win32.ActiveCfg = Release|Win32
+		{D7694EFE-C6CA-4D35-A378-5B62A7DCFAC7}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
