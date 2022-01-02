@@ -22,9 +22,9 @@ ULONG __stdcall Nexus::Release() {
 HRESULT __stdcall Nexus::QueryInterface(REFIID riid, void** ppv) {
 	std::cout << "Component: Nexus::QueryInterface" << std::endl;
 
-	if (::IsEqualIID(riid, IID_IUnknown) || ::IsEqualIID(riid, __uuidof(INexus))) {
+	if (riid == IID_IUnknown || riid == __uuidof(INexus)) {
 		*ppv = static_cast<INexus*>(this);
-	} else if (::IsEqualIID(riid, __uuidof(IGameObject))) {
+	} else if (riid == __uuidof(IGameObject)) {
 		*ppv = static_cast<IGameObject*>(this);
 	} else {
 		*ppv = NULL;
@@ -63,9 +63,9 @@ ULONG __stdcall Probe::Release() {
 HRESULT __stdcall Probe::QueryInterface(REFIID riid, void** ppv) {
 	std::cout << "Component: Probe::QueryInterface" << std::endl;
 
-	if (::IsEqualIID(riid, IID_IUnknown) || ::IsEqualIID(riid, __uuidof(IProbe))) {
+	if (riid == IID_IUnknown || riid == __uuidof(IProbe)) {
 		*ppv = static_cast<IProbe*>(this);
-	} else if (::IsEqualIID(riid, __uuidof(IGameObject))) {
+	} else if (riid == __uuidof(IGameObject)) {
 		*ppv = static_cast<IGameObject*>(this);
 	} else {
 		*ppv = NULL;

@@ -27,7 +27,7 @@ HRESULT show_game_unit_data(IUnknown* unknwn) {
 void start_from_probe() {
 	wil::com_ptr_t<IProbe> probe{};
 
-	THROW_IF_FAILED(::CoGetClassObject(__uuidof(Probe), CLSCTX_INPROC_SERVER, nullptr, __uuidof(IProbe), probe.put_void()));
+	THROW_IF_FAILED(::CoCreateInstance(__uuidof(Probe), nullptr, CLSCTX_INPROC_SERVER, __uuidof(IProbe), probe.put_void()));
 	THROW_IF_FAILED(show_game_unit_data(probe.get()));
 
 	auto name{ wil::make_bstr(L"Nexus") };
@@ -40,7 +40,7 @@ void start_from_probe() {
 void start_from_nexus() {
 	wil::com_ptr_t<INexus> nexus{};
 
-	THROW_IF_FAILED(::CoGetClassObject(__uuidof(Nexus), CLSCTX_INPROC_SERVER, nullptr, __uuidof(INexus), nexus.put_void()));
+	THROW_IF_FAILED(::CoCreateInstance(__uuidof(Nexus), nullptr, CLSCTX_INPROC_SERVER, __uuidof(INexus), nexus.put_void()));
 	THROW_IF_FAILED(show_game_unit_data(nexus.get()));
 
 	auto name{ wil::make_bstr(L"Probe") };

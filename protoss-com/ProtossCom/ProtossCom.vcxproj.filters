@@ -34,5 +34,8 @@
     <ClInclude Include="protoss_c.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="factory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

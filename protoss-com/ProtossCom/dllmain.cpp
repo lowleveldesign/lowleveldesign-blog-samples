@@ -8,29 +8,23 @@
 #include <wil/resource.h>
 #include <wil/result.h>
 
+#include "factory.h"
 #include "protoss_c.h"
 
 HMODULE module_dll;
 
-STDAPI DllGetClassObject(REFCLSID rclsid, REFIID riid,
-	LPVOID* ppv) {
+STDAPI DllGetClassObject(REFCLSID rclsid, REFIID riid, LPVOID* ppv) {
 	if (rclsid != __uuidof(Nexus) && rclsid != __uuidof(Probe)) {
 		return CLASS_E_CLASSNOTAVAILABLE;
 	}
-
-	try {
-		wil::com_ptr_t<IUnknown> unknown{};
-		if (::IsEqualCLSID(rclsid, __uuidof(Nexus))) {
-			// attach does not call AddRef
-			unknown.attach(static_cast<INexus*>(new Nexus()));
-		} else if (::IsEqualCLSID(rclsid, __uuidof(Probe))) {
-			unknown.attach(static_cast<IProbe*>(new Probe()));
-		}
-
-		return unknown->QueryInterface(riid, ppv);
-	} catch (const std::bad_alloc&) {
-		return E_OUTOFMEMORY;
+	if (rclsid == __uuidof(Nexus)) {
+		static ProtossObjectClassFactory<Nexus, INexus> factory;
+		return factory.QueryInterface(riid, ppv);
+	} else if (rclsid == __uuidof(Probe)) {
+		static ProtossObjectClassFactory<Probe, IProbe> factory;
+		return factory.QueryInterface(riid, ppv);
 	}
+	return CLASS_E_CLASSNOTAVAILABLE;
 }
 
 
@@ -71,14 +65,14 @@ STDAPI DllRegisterServer() {
 
 		auto name{ coclass.first };
 		RETURN_IF_WIN32_ERROR(::RegSetValueEx(regkey.get(), L"", 0, REG_SZ,
-			reinterpret_cast<const BYTE*>(name.data()), (name.size() + 1) * sizeof(wchar_t)));
+			reinterpret_cast<const BYTE*>(name.data()), static_cast<DWORD>((name.size() + 1) * sizeof(wchar_t))));
 
 		wil::unique_hkey inproc_regkey{};
 		FAIL_FAST_IF_WIN32_ERROR(::RegCreateKeyTransacted(regkey.get(), L"InProcServer32", 0, nullptr, REG_OPTION_NON_VOLATILE,
 			KEY_WRITE, nullptr, inproc_regkey.put(), nullptr, transaction.get(), nullptr));
 
 		RETURN_IF_WIN32_ERROR(::RegSetValueEx(inproc_regkey.get(), L"", 0, REG_SZ,
-			reinterpret_cast<const BYTE*>(dll_path.c_str()), (dll_path.size() + 1) * sizeof(wchar_t)));
+			reinterpret_cast<const BYTE*>(dll_path.c_str()), static_cast<DWORD>((dll_path.size() + 1) * sizeof(wchar_t))));
 	}
 
 	RETURN_IF_WIN32_BOOL_FALSE(::CommitTransaction(transaction.get()));
