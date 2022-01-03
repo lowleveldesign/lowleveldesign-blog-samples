@@ -84,3 +84,4 @@ HRESULT __stdcall Probe::ConstructBuilding(BSTR building_name, IUnknown** ppUnk)
 	}
 	return E_NOINTERFACE;
 }
+

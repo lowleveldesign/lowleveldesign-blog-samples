@@ -1,5 +1,6 @@
 
 #include <array>
+#include <tuple>
 
 #include <Windows.h>
 #include <ktmw32.h>
@@ -27,6 +28,10 @@ STDAPI DllGetClassObject(REFCLSID rclsid, REFIID riid, LPVOID* ppv) {
 	return CLASS_E_CLASSNOTAVAILABLE;
 }
 
+STDAPI DllCanUnloadNow() {
+	// does not support dynamic unload
+	return S_FALSE;
+}
 
 std::wstring wstring_from_guid(const GUID& iid) {
 	wil::unique_cotaskmem_string s{};
@@ -38,9 +43,9 @@ std::wstring wstring_from_guid(const GUID& iid) {
 	return {};
 }
 
-std::array<std::pair<std::wstring_view, std::wstring>, 2> coclasses{
-	std::pair<std::wstring_view, std::wstring> { L"Protoss Nexus", wstring_from_guid(__uuidof(Nexus)) },
-	std::pair<std::wstring_view, std::wstring> { L"Protoss Probe", wstring_from_guid(__uuidof(Probe)) },
+std::array<std::tuple<std::wstring_view, std::wstring, std::wstring>, 2> coclasses{
+	std::tuple<std::wstring_view, std::wstring, std::wstring> { L"Protoss Nexus", wstring_from_guid(__uuidof(Nexus)), L"Protoss.Nexus.1" },
+	std::tuple<std::wstring_view, std::wstring, std::wstring> { L"Protoss Probe", wstring_from_guid(__uuidof(Probe)), L"Protoss.Probe.1" },
 };
 
 STDAPI DllRegisterServer() {
@@ -52,6 +57,16 @@ STDAPI DllRegisterServer() {
 		return S_OK;
 	};
 
+	auto create_reg_subkey_with_value = [](HANDLE transaction, HKEY regkey, std::wstring_view subkey_name, std::wstring_view subkey_value) {
+		wil::unique_hkey subkey{};
+		RETURN_IF_WIN32_ERROR(::RegCreateKeyTransacted(regkey, subkey_name.data(), 0, nullptr, REG_OPTION_NON_VOLATILE,
+			KEY_WRITE, nullptr, subkey.put(), nullptr, transaction, nullptr));
+		RETURN_IF_WIN32_ERROR(::RegSetValueEx(subkey.get(), nullptr, 0, REG_SZ,
+			reinterpret_cast<const BYTE*>(subkey_value.data()), static_cast<DWORD>((subkey_value.size() + 1) * sizeof(wchar_t))));
+
+		return S_OK;
+	};
+
 	wil::unique_handle transaction{ ::CreateTransaction(nullptr, nullptr, TRANSACTION_DO_NOT_PROMOTE, 0, 0, INFINITE, nullptr) };
 	RETURN_LAST_ERROR_IF(!transaction.is_valid());
 
@@ -59,20 +74,27 @@ STDAPI DllRegisterServer() {
 	RETURN_IF_FAILED(get_dll_path(dll_path));
 
 	for (const auto& coclass : coclasses) {
-		wil::unique_hkey regkey{};
-		RETURN_IF_WIN32_ERROR(::RegCreateKeyTransacted(HKEY_CLASSES_ROOT, (L"CLSID\\" + coclass.second).c_str(),
-			0, nullptr, REG_OPTION_NON_VOLATILE, KEY_WRITE, nullptr, regkey.put(), nullptr, transaction.get(), nullptr));
+		auto name{ std::get<0>(coclass) };
+		auto clsid{ std::get<1>(coclass) };
+		auto progId{ std::get<2>(coclass) };
 
-		auto name{ coclass.first };
+		wil::unique_hkey regkey{};
+		// CLSID
+		RETURN_IF_WIN32_ERROR(::RegCreateKeyTransacted(HKEY_CLASSES_ROOT, (L"CLSID\\" + clsid).c_str(),
+			0, nullptr, REG_OPTION_NON_VOLATILE, KEY_WRITE, nullptr, regkey.put(), nullptr, transaction.get(), nullptr));
 		RETURN_IF_WIN32_ERROR(::RegSetValueEx(regkey.get(), L"", 0, REG_SZ,
 			reinterpret_cast<const BYTE*>(name.data()), static_cast<DWORD>((name.size() + 1) * sizeof(wchar_t))));
 
-		wil::unique_hkey inproc_regkey{};
-		FAIL_FAST_IF_WIN32_ERROR(::RegCreateKeyTransacted(regkey.get(), L"InProcServer32", 0, nullptr, REG_OPTION_NON_VOLATILE,
-			KEY_WRITE, nullptr, inproc_regkey.put(), nullptr, transaction.get(), nullptr));
+		RETURN_IF_FAILED(create_reg_subkey_with_value(transaction.get(), regkey.get(), L"InprocServer32", dll_path));
+		RETURN_IF_FAILED(create_reg_subkey_with_value(transaction.get(), regkey.get(), L"ProgID", dll_path));
 
-		RETURN_IF_WIN32_ERROR(::RegSetValueEx(inproc_regkey.get(), L"", 0, REG_SZ,
-			reinterpret_cast<const BYTE*>(dll_path.c_str()), static_cast<DWORD>((dll_path.size() + 1) * sizeof(wchar_t))));
+		// ProgID
+		RETURN_IF_WIN32_ERROR(::RegCreateKeyTransacted(HKEY_CLASSES_ROOT, progId.c_str(),
+			0, nullptr, REG_OPTION_NON_VOLATILE, KEY_WRITE, nullptr, regkey.put(), nullptr, transaction.get(), nullptr));
+		RETURN_IF_WIN32_ERROR(::RegSetValueEx(regkey.get(), L"", 0, REG_SZ,
+			reinterpret_cast<const BYTE*>(name.data()), static_cast<DWORD>((name.size() + 1) * sizeof(wchar_t))));
+
+		RETURN_IF_FAILED(create_reg_subkey_with_value(transaction.get(), regkey.get(), L"CLSID", clsid));
 	}
 
 	RETURN_IF_WIN32_BOOL_FALSE(::CommitTransaction(transaction.get()));
@@ -85,15 +107,23 @@ STDAPI DllUnregisterServer() {
 	RETURN_LAST_ERROR_IF(!transaction.is_valid());
 
 	for (const auto& coclass : coclasses) {
-		// FIXME: is the below needed?
+		auto clsid{ std::get<1>(coclass) };
+		auto progid{ std::get<2>(coclass) };
+
 		wil::unique_hkey regkey{};
-		RETURN_IF_WIN32_ERROR(::RegOpenKeyTransacted(HKEY_CLASSES_ROOT, (L"CLSID\\" + coclass.second).c_str(), 0,
+		// CLSID
+		RETURN_IF_WIN32_ERROR(::RegOpenKeyTransacted(HKEY_CLASSES_ROOT, (L"CLSID\\" + clsid).c_str(), 0,
 			DELETE | KEY_ENUMERATE_SUB_KEYS | KEY_QUERY_VALUE | KEY_SET_VALUE,
 			regkey.put(), transaction.get(), nullptr));
-
 		RETURN_IF_WIN32_ERROR(::RegDeleteTree(regkey.get(), nullptr));
+		RETURN_IF_WIN32_ERROR(::RegDeleteKeyTransacted(HKEY_CLASSES_ROOT, (L"CLSID\\" + clsid).c_str(), 0, 0, transaction.get(), nullptr));
 
-		RETURN_IF_WIN32_ERROR(::RegDeleteKeyTransacted(HKEY_CLASSES_ROOT, (L"CLSID\\" + coclass.second).c_str(), 0, 0, transaction.get(), nullptr));
+		// ProgID
+		RETURN_IF_WIN32_ERROR(::RegOpenKeyTransacted(HKEY_CLASSES_ROOT, progid.c_str(), 0,
+			DELETE | KEY_ENUMERATE_SUB_KEYS | KEY_QUERY_VALUE | KEY_SET_VALUE,
+			regkey.put(), transaction.get(), nullptr));
+		RETURN_IF_WIN32_ERROR(::RegDeleteTree(regkey.get(), nullptr));
+		RETURN_IF_WIN32_ERROR(::RegDeleteKeyTransacted(HKEY_CLASSES_ROOT, progid.c_str(), 0, 0, transaction.get(), nullptr));
 	}
 
 	RETURN_IF_WIN32_BOOL_FALSE(::CommitTransaction(transaction.get()));
