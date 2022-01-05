@@ -1,7 +1,26 @@
 #include <iostream>
+#include <iomanip>
 #include <string>
 
 #include "protoss_c.h"
+
+std::ostream& operator<<(std::ostream& os, const GUID& guid) {
+	const auto prevflags = os.flags();
+	os.setf(std::ios_base::hex, std::ios_base::basefield);
+	os << std::setfill('0') << std::setw(8) << guid.Data1
+		<< "-" << std::setw(4) << guid.Data2
+		<< "-" << std::setw(4) << guid.Data3 << "-";
+
+	for (int i = 0; i < 8; i++) {
+		if (i == 2) {
+			os << "-";
+		}
+		os << std::setw(2) << static_cast<int>(guid.Data4[i]);
+	}
+	os.setf(prevflags);
+	return os;
+}
+
 
 ULONG __stdcall Nexus::AddRef() {
 	ref_count += 1;
@@ -20,7 +39,7 @@ ULONG __stdcall Nexus::Release() {
 }
 
 HRESULT __stdcall Nexus::QueryInterface(REFIID riid, void** ppv) {
-	std::cout << "Component: Nexus::QueryInterface" << std::endl;
+	std::cout << "Component: Nexus::QueryInterface: " << riid << std::endl;
 
 	if (riid == IID_IUnknown || riid == __uuidof(INexus)) {
 		*ppv = static_cast<INexus*>(this);
@@ -61,7 +80,7 @@ ULONG __stdcall Probe::Release() {
 }
 
 HRESULT __stdcall Probe::QueryInterface(REFIID riid, void** ppv) {
-	std::cout << "Component: Probe::QueryInterface" << std::endl;
+	std::cout << "Component: Nexus::QueryInterface: " << riid << std::endl;
 
 	if (riid == IID_IUnknown || riid == __uuidof(IProbe)) {
 		*ppv = static_cast<IProbe*>(this);
