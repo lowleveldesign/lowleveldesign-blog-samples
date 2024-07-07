@@ -1,0 +1,19 @@
+﻿
+// Win32 methods
+CreateFile
+GetCurrentThread
+GetModuleHandle
+WriteFile
+
+// Detours methods
+DetourRestoreAfterWith
+DetourUpdateThread
+DetourAttach
+DetourDetach
+DetourTransactionBegin
+DetourTransactionCommit
+DetourFinishHelperProcess
+
+// constants and enums
+WIN32_ERROR
+

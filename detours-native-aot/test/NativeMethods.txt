@@ -1,0 +1,18 @@
+﻿// methods
+EnumProcessModulesEx
+GetModuleFileNameEx
+IsWow64Process
+OpenProcess
+VirtualAllocEx
+VirtualFreeEx
+WaitForSingleObject
+WriteProcessMemory
+
+// structs
+IMAGE_EXPORT_DIRECTORY
+SECURITY_ATTRIBUTES
+
+// constants and enums
+PROCESS_ACCESS_RIGHTS
+WIN32_ERROR
+MAX_PATH
